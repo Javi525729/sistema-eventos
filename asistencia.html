@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control de Asistencia — UniEventos</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .asistencia-header { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:2rem; display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap; }
+    .asistencia-event-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--white); margin-bottom:0.3rem; }
+    .asistencia-counters { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .counter { text-align:center; background:var(--secondary); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.75rem 1.25rem; min-width:80px; }
+    .counter-value { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:var(--white); line-height:1; }
+    .counter-label { font-size:0.72rem; color:var(--text-muted); margin-top:0.2rem; }
+    .counter.present .counter-value { color:var(--success); }
+    .counter.absent .counter-value { color:var(--danger); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">🎓 Uni<span>Eventos</span></a>
+  <div class="nav-links">
+    <a href="index.html">Inicio</a>
+    <a href="eventos.html">Eventos</a>
+    <a href="asistencia.html" class="active">Asistencia</a>
+    <a href="crear-evento.html">+ Nuevo Evento</a>
+  </div>
+  <div class="nav-user"></div>
+</nav>
+
+<main class="page">
+  <div class="container">
+
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span class="sep">›</span>
+      <a href="eventos.html">Eventos</a><span class="sep">›</span>
+      <span class="current" id="breadNombre">Asistencia</span>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Control de <span>Asistencia</span></h1>
+        <p class="page-subtitle">Marca la asistencia de los inscritos al evento</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="marcarTodos()">✓ Marcar todos</button>
+        <button class="btn btn-secondary" onclick="desmarcarTodos()">✗ Desmarcar todos</button>
+        <button class="btn btn-success" onclick="guardarAsistencia()">💾 Guardar asistencia</button>
+      </div>
+    </div>
+
+    <!-- Selector de evento -->
+    <div class="card" style="margin-bottom:1.5rem">
+      <div style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap">
+        <div class="form-group" style="flex:1;min-width:200px;margin:0">
+          <label>Seleccionar evento</label>
+          <select class="filter-select" style="width:100%" id="selectorEvento"></select>
+        </div>
+        <button class="btn btn-primary" onclick="cargarEvento()">Cargar inscritos</button>
+      </div>
+    </div>
+
+    <!-- Info del evento -->
+    <div class="asistencia-header">
+      <div style="flex:1;min-width:200px">
+        <div class="asistencia-event-name" id="eventoNombre">—</div>
+        <div style="font-size:0.85rem;color:var(--text-muted)" id="eventoMeta"></div>
+        <div style="margin-top:0.5rem" id="eventoEstado"></div>
+      </div>
+      <div class="asistencia-counters">
+        <div class="counter"><div class="counter-value" id="cTotal">—</div><div class="counter-label">Inscritos</div></div>
+        <div class="counter present"><div class="counter-value" id="cPresentes">0</div><div class="counter-label">Presentes</div></div>
+        <div class="counter absent"><div class="counter-value" id="cAusentes">0</div><div class="counter-label">Ausentes</div></div>
+        <div class="counter"><div class="counter-value" id="cPct">0%</div><div class="counter-label">Asistencia</div></div>
+      </div>
+    </div>
+
+    <div id="savedAlert" class="alert alert-success" style="display:none">✅ Asistencia guardada exitosamente.</div>
+
+    <div style="display:flex;gap:1rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
+      <input type="text" class="search-input" placeholder="Buscar por nombre o cédula..." style="max-width:300px" id="searchAsist" />
+      <select class="filter-select" id="filterAsist">
+        <option value="">Todos</option>
+        <option value="present">Solo presentes</option>
+        <option value="absent">Solo ausentes</option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="asistenciaTable">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="checkAll" onchange="toggleAll(this)" /></th>
+            <th>#</th><th>Nombre del estudiante</th><th>Cédula</th><th>Carrera</th><th>Email</th><th>Hora registro</th><th>Asistencia</th>
+          </tr>
+        </thead>
+        <tbody id="asistenciaBody"></tbody>
+      </table>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:1rem">
+      <button class="btn btn-success" onclick="guardarAsistencia()">💾 Guardar asistencia</button>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container"><p>© 2026 UniEventos — Sistema de Eventos Universitarios · Grupo G01</p></div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  if (!getSesion()) { window.location.replace('login.html'); }
+  const estudiantesBase = [
+    { id:1, nombre:'Ana Torres Cabrera', cedula:'0105123456', carrera:'Ing. Software', email:'a.torres@ug.edu.ec', hora:'09:05', presente:true },
+    { id:2, nombre:'Carlos Mora Vega', cedula:'0102987654', carrera:'Ing. Sistemas', email:'c.mora@ug.edu.ec', hora:'09:12', presente:true },
+    { id:3, nombre:'María Ríos López', cedula:'0109876543', carrera:'Ing. Software', email:'m.rios@ug.edu.ec', hora:'—', presente:false },
+    { id:4, nombre:'Pedro Lema Castro', cedula:'0106543210', carrera:'Telecomunicaciones', email:'p.lema@ug.edu.ec', hora:'09:20', presente:true },
+    { id:5, nombre:'Lucía Pérez Salas', cedula:'0107123789', carrera:'Ing. Software', email:'l.perez@ug.edu.ec', hora:'09:08', presente:true },
+    { id:6, nombre:'Roberto Jiménez', cedula:'0103456789', carrera:'Ing. Civil', email:'r.jimenez@ug.edu.ec', hora:'—', presente:false },
+    { id:7, nombre:'Valentina Cruz', cedula:'0108765432', carrera:'Ing. Software', email:'v.cruz@ug.edu.ec', hora:'09:15', presente:true },
+    { id:8, nombre:'Diego Alvarado', cedula:'0104321678', carrera:'Ing. Sistemas', email:'d.alvarado@ug.edu.ec', hora:'—', presente:false },
+    { id:9, nombre:'Sofía Herrera', cedula:'0101234567', carrera:'Ing. Software', email:'s.herrera@ug.edu.ec', hora:'09:03', presente:true },
+    { id:10, nombre:'Andrés Muñoz', cedula:'0110987654', carrera:'Telecomunicaciones', email:'a.munoz@ug.edu.ec', hora:'09:22', presente:true },
+  ];
+
+  let estudiantes = JSON.parse(JSON.stringify(estudiantesBase));
+  let eventoActual = null;
+
+  // Llenar selector
+  function poblarSelector() {
+    const sel = document.getElementById('selectorEvento');
+    const eventos = getEventos();
+    sel.innerHTML = eventos.map(e => `<option value="${e.id}">${e.nombre}</option>`).join('');
+
+    const params = new URLSearchParams(window.location.search);
+    const urlId = params.get('id');
+    if (urlId) sel.value = urlId;
+    cargarEvento();
+  }
+
+  function cargarEvento() {
+    const id = document.getElementById('selectorEvento').value;
+    eventoActual = getEvento(id);
+    if (!eventoActual) return;
+
+    document.getElementById('breadNombre').textContent = eventoActual.nombre;
+    document.getElementById('eventoNombre').textContent = eventoActual.nombre;
+    document.getElementById('eventoMeta').innerHTML = `📅 ${formatFecha(eventoActual.fecha)} &nbsp;·&nbsp; 🕐 ${eventoActual.hora_inicio}${eventoActual.hora_fin ? ' — '+eventoActual.hora_fin : ''} &nbsp;·&nbsp; 📍 ${eventoActual.lugar}`;
+    const estEl = document.getElementById('eventoEstado');
+    const estMap = { activo:'status-activo', pendiente:'status-pendiente', finalizado:'status-finalizado', cancelado:'status-cancelado' };
+    const lblMap = { activo:'Activo', pendiente:'Pendiente', finalizado:'Finalizado', cancelado:'Cancelado' };
+    estEl.innerHTML = `<span class="status ${estMap[eventoActual.estado]||''}">${lblMap[eventoActual.estado]||eventoActual.estado}</span>`;
+    document.getElementById('cTotal').textContent = eventoActual.inscritos;
+
+    // Ajustar lista de estudiantes al cupo
+    estudiantes = estudiantesBase.slice(0, Math.min(eventoActual.inscritos, estudiantesBase.length));
+    renderTabla(estudiantes);
+    updateCounters();
+  }
+
+  function renderTabla(data) {
+    const tbody = document.getElementById('asistenciaBody');
+    tbody.innerHTML = data.map((est, i) => `
+      <tr>
+        <td><input type="checkbox" ${est.presente?'checked':''} onchange="togglePresente(${est.id},this)" /></td>
+        <td>${i+1}</td>
+        <td><strong>${est.nombre}</strong></td>
+        <td style="font-family:monospace;font-size:0.82rem">${est.cedula}</td>
+        <td>${est.carrera}</td>
+        <td style="font-size:0.82rem;color:var(--text-muted)">${est.email}</td>
+        <td style="font-size:0.85rem">${est.hora}</td>
+        <td><span class="status ${est.presente?'status-activo':'status-cancelado'}" id="sb-${est.id}">${est.presente?'✓ Presente':'✗ Ausente'}</span></td>
+      </tr>
+    `).join('');
+    updateCounters();
+  }
+
+  function togglePresente(id, cb) {
+    const est = estudiantes.find(e => e.id === id);
+    est.presente = cb.checked;
+    est.hora = cb.checked ? new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}) : '—';
+    const sb = document.getElementById('sb-' + id);
+    sb.className = 'status ' + (est.presente?'status-activo':'status-cancelado');
+    sb.textContent = est.presente ? '✓ Presente' : '✗ Ausente';
+    updateCounters();
+  }
+
+  function updateCounters() {
+    const pres = estudiantes.filter(e => e.presente).length;
+    const total = estudiantes.length;
+    document.getElementById('cPresentes').textContent = pres;
+    document.getElementById('cAusentes').textContent = total - pres;
+    document.getElementById('cPct').textContent = total ? Math.round((pres/total)*100)+'%' : '0%';
+  }
+
+  function marcarTodos()   { estudiantes.forEach(e => e.presente = true); renderTabla(estudiantes); }
+  function desmarcarTodos(){ estudiantes.forEach(e => { e.presente=false; e.hora='—'; }); renderTabla(estudiantes); }
+  function toggleAll(cb)   { estudiantes.forEach(e => e.presente = cb.checked); renderTabla(estudiantes); }
+
+  function guardarAsistencia() {
+    const al = document.getElementById('savedAlert');
+    al.style.display = 'flex';
+    window.scrollTo({ top:0, behavior:'smooth' });
+    setTimeout(() => al.style.display = 'none', 4000);
+  }
+
+  document.getElementById('searchAsist').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    renderTabla(estudiantes.filter(e => e.nombre.toLowerCase().includes(q) || e.cedula.includes(q)));
+  });
+
+  document.getElementById('filterAsist').addEventListener('change', function() {
+    let f = estudiantes;
+    if (this.value === 'present') f = estudiantes.filter(e => e.presente);
+    if (this.value === 'absent')  f = estudiantes.filter(e => !e.presente);
+    renderTabla(f);
+  });
+
+  poblarSelector();
+</script>
+</body>
+</html>

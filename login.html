@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iniciar Sesión — UniEventos</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body {
+      display: flex; flex-direction: column; min-height: 100vh;
+      background: radial-gradient(ellipse at 30% 70%, rgba(233,69,96,0.1) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 20%, rgba(15,52,96,0.5) 0%, transparent 50%),
+                  var(--primary);
+    }
+    .login-wrapper { flex:1; display:flex; align-items:center; justify-content:center; padding:2rem; }
+    .login-box { width:100%; max-width:420px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.5); animation:fadeInUp 0.5s ease forwards; }
+    .login-top { background:linear-gradient(135deg,var(--secondary),rgba(233,69,96,0.1)); padding:2.5rem 2rem; text-align:center; border-bottom:1px solid var(--border); }
+    .login-logo { font-family:'Playfair Display',serif; font-size:2rem; font-weight:900; color:var(--white); margin-bottom:0.25rem; }
+    .login-logo span { color:var(--accent); }
+    .login-subtitle { font-size:0.85rem; color:var(--text-muted); }
+    .login-body { padding:2rem; }
+    .login-body .form-group { margin-bottom:1.25rem; }
+    .input-wrapper { position:relative; }
+    .input-icon { position:absolute; left:0.9rem; top:50%; transform:translateY(-50%); font-size:1rem; pointer-events:none; }
+    .input-wrapper input { padding-left:2.5rem; }
+    .toggle-password { position:absolute; right:0.9rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:0.9rem; transition:var(--transition); }
+    .toggle-password:hover { color:var(--text); }
+    .remember-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; font-size:0.85rem; }
+    .remember-row label { display:flex; align-items:center; gap:0.4rem; cursor:pointer; }
+    .btn-login { width:100%; padding:0.85rem; font-size:1rem; background:var(--accent); color:white; border:none; border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-weight:600; cursor:pointer; transition:var(--transition); }
+    .btn-login:hover { background:#c73652; transform:translateY(-1px); box-shadow:0 4px 20px rgba(233,69,96,0.4); }
+    .login-footer { text-align:center; padding:1.25rem 2rem; border-top:1px solid var(--border); font-size:0.83rem; color:var(--text-muted); }
+    .login-footer a { color:var(--accent); text-decoration:none; }
+    .role-selector { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.5rem; }
+    .role-option { border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.75rem; text-align:center; cursor:pointer; transition:var(--transition); font-size:0.85rem; color:var(--text-muted); }
+    .role-option:hover { border-color:var(--accent); color:var(--white); }
+    .role-option.selected { border-color:var(--accent); background:rgba(233,69,96,0.1); color:var(--white); }
+    .role-option .role-icon { font-size:1.4rem; display:block; margin-bottom:0.3rem; }
+    .error-msg { background:rgba(233,69,96,0.15); border:1px solid rgba(233,69,96,0.3); border-radius:var(--radius-sm); padding:0.75rem 1rem; font-size:0.85rem; color:#ef9a9a; margin-bottom:1rem; display:none; }
+    .hint { font-size:0.78rem; color:var(--text-muted); margin-top:0.75rem; text-align:center; background:rgba(255,255,255,0.04); border-radius:var(--radius-sm); padding:0.5rem; }
+  </style>
+</head>
+<body>
+
+<div class="login-wrapper">
+  <div class="login-box">
+    <div class="login-top">
+      <div class="login-logo">🎓 Uni<span>Eventos</span></div>
+      <div class="login-subtitle">Sistema de Eventos Universitarios — G01</div>
+    </div>
+
+    <div class="login-body">
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;text-align:center">Selecciona tu tipo de acceso</p>
+
+      <div class="role-selector">
+        <div class="role-option selected" onclick="selectRole(this,'estudiante')">
+          <span class="role-icon">👤</span>Estudiante
+        </div>
+        <div class="role-option" onclick="selectRole(this,'admin')">
+          <span class="role-icon">🛠</span>Administrador
+        </div>
+      </div>
+
+      <div id="errorMsg" class="error-msg">❌ Usuario o contraseña incorrectos.</div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="usuario">Correo institucional</label>
+          <div class="input-wrapper">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="usuario" placeholder="usuario@universidad.edu" autocomplete="email" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" class="toggle-password" onclick="togglePwd()">👁</button>
+          </div>
+        </div>
+        <div class="remember-row">
+          <label><input type="checkbox" /> Recordarme</label>
+        </div>
+        <button type="submit" class="btn-login">Iniciar sesión →</button>
+      </form>
+      <div class="hint">Demo: cualquier correo y contraseña funciona</div>
+    </div>
+
+    <div class="login-footer">
+      <a href="index.html">← Volver al inicio</a>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+  let rolSeleccionado = 'estudiante';
+
+  // Si ya hay sesión, redirigir
+  const nextUrl = new URLSearchParams(window.location.search).get('next') || 'index.html';
+  if (getSesion()) window.location.href = nextUrl;
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const user = document.getElementById('usuario').value.trim();
+    const pwd  = document.getElementById('password').value;
+    if (!user || !pwd) {
+      document.getElementById('errorMsg').style.display = 'block';
+      return;
+    }
+    document.getElementById('errorMsg').style.display = 'none';
+    // Extraer nombre del correo (antes del @)
+    const nombre = user.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+    setSesion({ nombre, correo: user, rol: rolSeleccionado });
+    document.querySelector('.btn-login').textContent = '✓ Entrando...';
+    setTimeout(() => { window.location.href = nextUrl; }, 700);
+  });
+
+  function togglePwd() {
+    const inp = document.getElementById('password');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  function selectRole(el, rol) {
+    document.querySelectorAll('.role-option').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+    rolSeleccionado = rol;
+  }
+</script>
+</body>
+</html>

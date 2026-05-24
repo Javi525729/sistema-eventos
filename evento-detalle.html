@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detalle del Evento — UniEventos</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .event-hero { background:linear-gradient(135deg,var(--secondary) 0%,rgba(233,69,96,0.1) 100%); border:1px solid var(--border); border-radius:var(--radius); padding:2.5rem; margin-bottom:2rem; position:relative; overflow:hidden; }
+    .event-hero::before { content:''; position:absolute; right:-50px; top:-50px; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle,rgba(233,69,96,0.1),transparent); }
+    .event-hero-top { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; }
+    .event-title-main { font-family:'Playfair Display',serif; font-size:2rem; font-weight:900; color:var(--white); margin:0.75rem 0 0.5rem; line-height:1.2; }
+    .event-description { color:var(--text-muted); font-size:0.95rem; line-height:1.7; max-width:700px; }
+    .event-info-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; margin-bottom:2rem; }
+    .info-box { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; }
+    .info-box-label { font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.5rem; }
+    .info-box-value { font-size:1rem; font-weight:600; color:var(--white); }
+    .progress-bar-wrap { background:rgba(255,255,255,0.1); border-radius:10px; height:8px; margin-top:0.75rem; overflow:hidden; }
+    .progress-bar { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:10px; }
+    .tabs { display:flex; gap:0.25rem; margin-bottom:1.5rem; border-bottom:1px solid var(--border); }
+    .tab-btn { padding:0.7rem 1.25rem; border:none; background:transparent; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:500; color:var(--text-muted); border-bottom:2px solid transparent; transition:var(--transition); margin-bottom:-1px; }
+    .tab-btn:hover { color:var(--white); }
+    .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">🎓 Uni<span>Eventos</span></a>
+  <div class="nav-links">
+    <a href="index.html">Inicio</a>
+    <a href="eventos.html" class="active">Eventos</a>
+    <a href="asistencia.html">Asistencia</a>
+    <a href="crear-evento.html">+ Nuevo Evento</a>
+  </div>
+  <div class="nav-user"></div>
+</nav>
+
+<main class="page">
+  <div class="container">
+
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span class="sep">›</span>
+      <a href="eventos.html">Eventos</a><span class="sep">›</span>
+      <span class="current" id="breadNombre">Detalle</span>
+    </div>
+
+    <div id="notFound" style="display:none" class="card">
+      <div style="text-align:center;padding:2rem;color:var(--text-muted)">
+        Evento no encontrado. <a href="eventos.html" style="color:var(--accent)">Volver a eventos</a>
+      </div>
+    </div>
+
+    <div id="contenido" style="display:none">
+      <!-- Hero -->
+      <div class="event-hero">
+        <div class="event-hero-top">
+          <div>
+            <span class="event-badge" id="heroBadge"></span>
+            <h1 class="event-title-main" id="heroNombre"></h1>
+            <p class="event-description" id="heroDesc"></p>
+          </div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap" id="heroAcciones"></div>
+        </div>
+        <span class="status" id="heroEstado"></span>
+      </div>
+
+      <!-- Info boxes -->
+      <div class="event-info-grid">
+        <div class="info-box"><div class="info-box-label">📅 Fecha</div><div class="info-box-value" id="infoFecha"></div></div>
+        <div class="info-box"><div class="info-box-label">🕐 Horario</div><div class="info-box-value" id="infoHorario"></div></div>
+        <div class="info-box"><div class="info-box-label">📍 Lugar</div><div class="info-box-value" id="infoLugar"></div></div>
+        <div class="info-box">
+          <div class="info-box-label">👥 Inscripciones</div>
+          <div class="info-box-value" id="infoInscritos"></div>
+          <div class="progress-bar-wrap"><div class="progress-bar" id="infoBar" style="width:0%"></div></div>
+        </div>
+        <div class="info-box"><div class="info-box-label">👤 Organizador</div><div class="info-box-value" id="infoOrg"></div></div>
+        <div class="info-box"><div class="info-box-label">💰 Costo</div><div class="info-box-value" id="infoCosto"></div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('inscritos',this)">👥 Inscritos</button>
+        <button class="tab-btn" onclick="showTab('programa',this)">📋 Programa</button>
+        <button class="tab-btn" onclick="showTab('info',this)">ℹ️ Información adicional</button>
+      </div>
+
+      <div id="tab-inscritos" class="tab-panel active">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
+          <input type="text" class="search-input" placeholder="Buscar inscrito..." style="max-width:280px" />
+          <div style="display:flex;gap:0.5rem">
+            <button class="btn btn-primary btn-sm">+ Inscribir Estudiante</button>
+            <button class="btn btn-secondary btn-sm">📥 Exportar</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>#</th><th>Nombre</th><th>Cédula</th><th>Carrera</th><th>Email</th><th>F. Inscripción</th><th>Asistió</th><th>Acciones</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><strong>Ana Torres</strong></td><td>0105XXXXXX</td><td>Ing. Software</td><td>a.torres@ug.edu.ec</td><td>20/05/2026</td><td><span class="status status-activo">Sí</span></td><td><button class="btn btn-danger btn-sm">Cancelar</button></td></tr>
+              <tr><td>2</td><td><strong>Carlos Mora</strong></td><td>0102XXXXXX</td><td>Ing. Sistemas</td><td>c.mora@ug.edu.ec</td><td>21/05/2026</td><td><span class="status status-pendiente">Pendiente</span></td><td><button class="btn btn-danger btn-sm">Cancelar</button></td></tr>
+              <tr><td>3</td><td><strong>María Ríos</strong></td><td>0109XXXXXX</td><td>Ing. Software</td><td>m.rios@ug.edu.ec</td><td>22/05/2026</td><td><span class="status status-activo">Sí</span></td><td><button class="btn btn-danger btn-sm">Cancelar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="tab-programa" class="tab-panel">
+        <div class="card">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.5rem">Programa del día</h3>
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div style="display:flex;gap:1rem"><div style="min-width:70px;font-size:0.82rem;color:var(--accent);font-weight:700">09:00</div><div style="flex:1;border-left:2px solid var(--border);padding-left:1rem"><strong style="color:var(--white)">Registro y bienvenida</strong><div style="font-size:0.83rem;color:var(--text-muted)">Hall principal</div></div></div>
+            <div style="display:flex;gap:1rem"><div style="min-width:70px;font-size:0.82rem;color:var(--accent);font-weight:700">10:00</div><div style="flex:1;border-left:2px solid var(--border);padding-left:1rem"><strong style="color:var(--white)">Ponencia magistral</strong><div style="font-size:0.83rem;color:var(--text-muted)">Auditorio Principal</div></div></div>
+            <div style="display:flex;gap:1rem"><div style="min-width:70px;font-size:0.82rem;color:var(--accent);font-weight:700">12:00</div><div style="flex:1;border-left:2px solid var(--border);padding-left:1rem"><strong style="color:var(--white)">Almuerzo y networking</strong><div style="font-size:0.83rem;color:var(--text-muted)">Cafetería central</div></div></div>
+            <div style="display:flex;gap:1rem"><div style="min-width:70px;font-size:0.82rem;color:var(--accent);font-weight:700">14:00</div><div style="flex:1;border-left:2px solid var(--border);padding-left:1rem"><strong style="color:var(--white)">Talleres paralelos</strong><div style="font-size:0.83rem;color:var(--text-muted)">Aulas 201, 202, 203</div></div></div>
+            <div style="display:flex;gap:1rem"><div style="min-width:70px;font-size:0.82rem;color:var(--accent);font-weight:700">16:30</div><div style="flex:1;border-left:2px solid var(--border);padding-left:1rem"><strong style="color:var(--white)">Clausura y certificados</strong><div style="font-size:0.83rem;color:var(--text-muted)">Auditorio Principal</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-info" class="tab-panel">
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group"><label>Organizador</label><div style="color:var(--white);padding:0.5rem 0" id="tabOrg"></div></div>
+            <div class="form-group"><label>Teléfono</label><div style="color:var(--white);padding:0.5rem 0" id="tabTel"></div></div>
+            <div class="form-group"><label>Email</label><div style="color:var(--white);padding:0.5rem 0" id="tabEmail"></div></div>
+            <div class="form-group"><label>Costo</label><div style="color:var(--white);padding:0.5rem 0" id="tabCosto"></div></div>
+            <div class="form-group full"><label>Requisitos</label><div style="color:var(--white);padding:0.5rem 0;line-height:1.7" id="tabReq"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Modal Eliminar -->
+<div id="modalEliminar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;max-width:400px;width:90%;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
+    <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:0.5rem">¿Eliminar evento?</h3>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">Esta acción no se puede deshacer.</p>
+    <div style="display:flex;gap:1rem;justify-content:center">
+      <button class="btn btn-secondary" onclick="document.getElementById('modalEliminar').style.display='none'">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarEliminar()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container"><p>© 2026 UniEventos — Sistema de Eventos Universitarios · Grupo G01</p></div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  if (!getSesion()) { window.location.replace('login.html'); }
+  const estadoClase = { activo:'status-activo', pendiente:'status-pendiente', finalizado:'status-finalizado', cancelado:'status-cancelado' };
+  const estadoLabel = { activo:'Activo', pendiente:'Pendiente', finalizado:'Finalizado', cancelado:'Cancelado' };
+  const badgeClase  = { academico:'badge-academico', cultural:'badge-cultural', deportivo:'badge-deportivo' };
+  const catLabel    = { academico:'Académico', cultural:'Cultural', deportivo:'Deportivo' };
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const ev = id ? getEvento(id) : getEventos()[0]; // fallback al primero si no hay id
+
+  if (!ev) {
+    document.getElementById('notFound').style.display = 'block';
+  } else {
+    document.getElementById('contenido').style.display = 'block';
+    document.getElementById('breadNombre').textContent = ev.nombre;
+    document.getElementById('heroNombre').textContent = ev.nombre;
+    document.getElementById('heroDesc').textContent = ev.descripcion;
+    document.getElementById('heroBadge').className = 'event-badge ' + (badgeClase[ev.categoria]||'');
+    document.getElementById('heroBadge').textContent = catLabel[ev.categoria]||ev.categoria;
+    const est = document.getElementById('heroEstado');
+    est.className = 'status ' + (estadoClase[ev.estado]||'');
+    est.textContent = estadoLabel[ev.estado]||ev.estado;
+
+    // Acciones
+    const acc = document.getElementById('heroAcciones');
+    if (ev.estado === 'finalizado') {
+      acc.innerHTML = `<a href="asistencia.html?id=${ev.id}" class="btn btn-success">✅ Asistencia</a>
+                       <button class="btn btn-danger" onclick="document.getElementById('modalEliminar').style.display='flex'">🗑 Eliminar</button>`;
+    } else {
+      acc.innerHTML = `<a href="editar-evento.html?id=${ev.id}" class="btn btn-secondary">✏️ Editar</a>
+                       <a href="asistencia.html?id=${ev.id}" class="btn btn-success">✅ Asistencia</a>
+                       <button class="btn btn-danger" onclick="document.getElementById('modalEliminar').style.display='flex'">🗑 Eliminar</button>`;
+    }
+
+    document.getElementById('infoFecha').textContent = formatFecha(ev.fecha);
+    document.getElementById('infoHorario').textContent = ev.hora_inicio + (ev.hora_fin ? ' — ' + ev.hora_fin : '');
+    document.getElementById('infoLugar').textContent = ev.lugar;
+    document.getElementById('infoInscritos').textContent = ev.inscritos + ' / ' + ev.cupo;
+    const pct = Math.round((ev.inscritos / ev.cupo) * 100);
+    document.getElementById('infoBar').style.width = pct + '%';
+    document.getElementById('infoOrg').textContent = ev.organizador || '—';
+    document.getElementById('infoCosto').textContent = ev.costo || 'Gratuito';
+
+    document.getElementById('tabOrg').textContent   = ev.organizador || '—';
+    document.getElementById('tabTel').textContent   = ev.telefono || '—';
+    document.getElementById('tabEmail').textContent = ev.email_contacto || '—';
+    document.getElementById('tabCosto').textContent = ev.costo || 'Gratuito';
+    document.getElementById('tabReq').textContent   = ev.requisitos || '—';
+
+    // Tab inscritos: actualizar conteo
+    document.querySelector('.tab-btn').textContent = '👥 Inscritos (' + ev.inscritos + ')';
+  }
+
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function confirmarEliminar() {
+    if (ev) { eliminarEvento(ev.id); window.location.href = 'eventos.html'; }
+  }
+</script>
+</body>
+</html>

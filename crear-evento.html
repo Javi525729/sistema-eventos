@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crear Evento — UniEventos</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">🎓 Uni<span>Eventos</span></a>
+  <div class="nav-links">
+    <a href="index.html">Inicio</a>
+    <a href="eventos.html">Eventos</a>
+    <a href="asistencia.html">Asistencia</a>
+    <a href="crear-evento.html" class="active">+ Nuevo Evento</a>
+  </div>
+  <div class="nav-user"></div>
+</nav>
+
+<main class="page">
+  <div class="container" style="max-width:800px">
+
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span class="sep">›</span>
+      <a href="eventos.html">Eventos</a><span class="sep">›</span>
+      <span class="current">Crear Evento</span>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Crear <span>Evento</span></h1>
+        <p class="page-subtitle">Completa la información del nuevo evento universitario</p>
+      </div>
+    </div>
+
+    <div class="card" id="formCard">
+      <form id="createForm" novalidate>
+
+        <div style="margin-bottom:2rem">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📋 Información básica</h3>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="nombre">Nombre del evento *</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Ej: Congreso de Ingeniería de Software 2026" required />
+            </div>
+            <div class="form-group full">
+              <label for="descripcion">Descripción *</label>
+              <textarea id="descripcion" name="descripcion" rows="4" placeholder="Describe el objetivo, contenido y detalles importantes..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="categoria">Categoría *</label>
+              <select id="categoria" name="categoria" required>
+                <option value="">Seleccionar categoría</option>
+                <option value="academico">Académico</option>
+                <option value="cultural">Cultural</option>
+                <option value="deportivo">Deportivo</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="estado">Estado inicial</label>
+              <select id="estado" name="estado">
+                <option value="pendiente">Pendiente</option>
+                <option value="activo">Activo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:2rem">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📍 Fecha, hora y lugar</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="fecha">Fecha del evento *</label>
+              <input type="date" id="fecha" name="fecha" required />
+            </div>
+            <div class="form-group">
+              <label for="hora_inicio">Hora de inicio *</label>
+              <input type="time" id="hora_inicio" name="hora_inicio" required />
+            </div>
+            <div class="form-group">
+              <label for="hora_fin">Hora de finalización</label>
+              <input type="time" id="hora_fin" name="hora_fin" />
+            </div>
+            <div class="form-group">
+              <label for="lugar">Lugar / Instalación *</label>
+              <input type="text" id="lugar" name="lugar" placeholder="Ej: Auditorio Principal" required />
+            </div>
+            <div class="form-group full">
+              <label for="direccion">Dirección o referencia</label>
+              <input type="text" id="direccion" name="direccion" placeholder="Ej: Edificio A, piso 2" />
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:2rem">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">👥 Inscripciones</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="cupo">Cupo máximo *</label>
+              <input type="number" id="cupo" name="cupo" placeholder="Ej: 100" min="1" required />
+            </div>
+            <div class="form-group">
+              <label for="costo">Costo de inscripción</label>
+              <input type="text" id="costo" name="costo" placeholder="Gratuito / $5.00" />
+            </div>
+            <div class="form-group full">
+              <label for="requisitos">Requisitos para participar</label>
+              <textarea id="requisitos" name="requisitos" rows="3" placeholder="Ej: Ser estudiante activo, presentar cédula..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:2rem">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📞 Contacto del organizador</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="organizador">Nombre del organizador *</label>
+              <input type="text" id="organizador" name="organizador" placeholder="Ej: Facultad de Ingeniería" required />
+            </div>
+            <div class="form-group">
+              <label for="telefono">Teléfono de contacto</label>
+              <input type="tel" id="telefono" name="telefono" placeholder="+593 99 000 0000" />
+            </div>
+            <div class="form-group">
+              <label for="email_contacto">Email de contacto</label>
+              <input type="email" id="email_contacto" name="email_contacto" placeholder="evento@universidad.edu" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a href="eventos.html" class="btn btn-secondary">Cancelar</a>
+          <button type="button" class="btn btn-secondary" onclick="limpiar()">🗑 Limpiar</button>
+          <button type="submit" class="btn btn-primary">✓ Crear Evento</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="successMsg" style="display:none" class="card">
+      <div style="text-align:center;padding:2rem">
+        <div style="font-size:3rem;margin-bottom:1rem">🎉</div>
+        <h2 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:0.5rem">¡Evento creado!</h2>
+        <p style="color:var(--text-muted);margin-bottom:1.5rem">El evento fue registrado exitosamente.</p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+          <a href="eventos.html" class="btn btn-secondary">Ver todos los eventos</a>
+          <a id="btnVerEvento" href="evento-detalle.html" class="btn btn-primary">Ver evento creado</a>
+          <button class="btn btn-secondary" onclick="crearOtro()">+ Crear otro evento</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container"><p>© 2026 UniEventos — Sistema de Eventos Universitarios · Grupo G01</p></div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  if (!getSesion()) { window.location.replace('login.html'); }
+  document.getElementById('createForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+    this.querySelectorAll('[required]').forEach(f => {
+      if (!f.value.trim()) { f.style.borderColor = 'var(--danger)'; valid = false; }
+      else f.style.borderColor = '';
+    });
+    if (!valid) return;
+
+    const datos = {
+      nombre: document.getElementById('nombre').value.trim(),
+      descripcion: document.getElementById('descripcion').value.trim(),
+      categoria: document.getElementById('categoria').value,
+      estado: document.getElementById('estado').value,
+      fecha: document.getElementById('fecha').value,
+      hora_inicio: document.getElementById('hora_inicio').value,
+      hora_fin: document.getElementById('hora_fin').value,
+      lugar: document.getElementById('lugar').value.trim(),
+      direccion: document.getElementById('direccion').value.trim(),
+      cupo: parseInt(document.getElementById('cupo').value),
+      costo: document.getElementById('costo').value.trim() || 'Gratuito',
+      requisitos: document.getElementById('requisitos').value.trim(),
+      organizador: document.getElementById('organizador').value.trim(),
+      telefono: document.getElementById('telefono').value.trim(),
+      email_contacto: document.getElementById('email_contacto').value.trim(),
+    };
+
+    const nuevoId = guardarEvento(datos);
+    document.getElementById('btnVerEvento').href = 'evento-detalle.html?id=' + nuevoId;
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  function limpiar() {
+    document.getElementById('createForm').reset();
+    document.querySelectorAll('input, select, textarea').forEach(f => f.style.borderColor = '');
+  }
+
+  function crearOtro() {
+    document.getElementById('formCard').style.display = 'block';
+    document.getElementById('successMsg').style.display = 'none';
+    limpiar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

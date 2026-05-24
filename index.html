@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniEventos — Sistema de Eventos Universitarios</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+
+    /* ===== HERO / PORTADA ===== */
+    .hero {
+      min-height: calc(100vh - 64px);
+      display: flex;
+      align-items: center;
+      background: radial-gradient(ellipse at 70% 50%, rgba(233,69,96,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(15,52,96,0.6) 0%, transparent 50%),
+                  var(--primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Fondo decorativo */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(233,69,96,0.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* Contenido principal */
+    .hero-content {
+      max-width: 680px;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    /* Etiqueta superior */
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(233,69,96,0.15);
+      border: 1px solid rgba(233,69,96,0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Título principal */
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-title .accent { color: var(--accent); }
+
+    /* Descripción */
+    .hero-description {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+      max-width: 540px;
+    }
+
+    /* Botones */
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Estadísticas */
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .hero-stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--white);
+    }
+
+    .hero-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+
+    /* ===== SECCIÓN DE CARACTERÍSTICAS ===== */
+    .features {
+      padding: 5rem 0;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    /* Grid responsive */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Tarjetas */
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    /* Efecto hover */
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ===== EVENTOS DESTACADOS ===== */
+    .preview-section {
+      padding-bottom: 5rem;
+    }
+
+    /* Tarjeta de evento */
+    .upcoming-event {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
+
+    /* Animación hover */
+    .upcoming-event:hover {
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    /* Caja de fecha */
+    .event-date-box {
+      background: rgba(233,69,96,0.15);
+      border: 1px solid rgba(233,69,96,0.3);
+      border-radius: 10px;
+      padding: 0.75rem;
+      text-align: center;
+      min-width: 58px;
+      flex-shrink: 0;
+    }
+
+    .date-day {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .date-month {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .upcoming-info { flex: 1; }
+
+    .upcoming-title {
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+
+    .upcoming-meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+  </style>
+</head>
+
+<body>
+
+<!-- ===== BARRA DE NAVEGACIÓN ===== -->
+<nav>
+
+  <!-- Logo del sistema -->
+  <a href="index.html" class="nav-brand">🎓 Uni<span>Eventos</span></a>
+
+  <!-- Menú principal -->
+  <div class="nav-links">
+    <a href="index.html" class="active">Inicio</a>
+    <a href="eventos.html">Eventos</a>
+    <a href="asistencia.html">Asistencia</a>
+    <a href="crear-evento.html">+ Nuevo Evento</a>
+  </div>
+
+  <!-- Información del usuario -->
+  <div class="nav-user"></div>
+
+</nav>
+
+<!-- ===== HERO / PORTADA ===== -->
+<section class="hero">
+
+  <div class="container">
+
+    <div class="hero-content">
+
+      <!-- Etiqueta -->
+      <div class="hero-label">
+        ✦ Sistema G01 — Plataforma Universitaria
+      </div>
+
+      <!-- Título principal -->
+      <h1 class="hero-title">
+        Gestión de<br>
+        <span class="accent">Eventos</span><br>
+        Universitarios
+      </h1>
+
+      <!-- Descripción -->
+      <p class="hero-description">
+        Plataforma web para registrar, organizar y administrar eventos académicos, culturales y deportivos. 
+        Control de asistencia y difusión de información en un solo lugar.
+      </p>
+
+      <!-- Botones -->
+      <div class="hero-cta">
+        <a href="eventos.html" class="btn btn-primary">Ver todos los eventos</a>
+        <a href="crear-evento.html" class="btn btn-secondary">+ Crear evento</a>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="hero-stats">
+
+        <div>
+          <div class="hero-stat-value">48</div>
+          <div class="hero-stat-label">Eventos este mes</div>
+        </div>
+
+        <div>
+          <div class="hero-stat-value">1,240</div>
+          <div class="hero-stat-label">Inscripciones activas</div>
+        </div>
+
+        <div>
+          <div class="hero-stat-value">3</div>
+          <div class="hero-stat-label">Categorías</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CARACTERÍSTICAS DEL SISTEMA ===== -->
+<section class="features">
+
+  <div class="container">
+
+    <div class="section-label">¿Qué ofrece el sistema?</div>
+
+    <h2 class="section-title">
+      Todo en un solo lugar
+    </h2>
+
+    <!-- Grid de tarjetas -->
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <span class="feature-icon">📅</span>
+        <div class="feature-title">Registro de Eventos</div>
+        <p class="feature-desc">
+          Crea y administra eventos académicos, culturales y deportivos con toda la información relevante.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">📋</span>
+        <div class="feature-title">Control de Inscripciones</div>
+        <p class="feature-desc">
+          Gestiona las inscripciones de estudiantes y controla el cupo disponible en cada evento.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">✅</span>
+        <div class="feature-title">Registro de Asistencia</div>
+        <p class="feature-desc">
+          Lleva un control preciso de quiénes asistieron a cada evento con marcado de asistencia.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">📢</span>
+        <div class="feature-title">Difusión de Información</div>
+        <p class="feature-desc">
+          Publica eventos y notifica a la comunidad universitaria sobre actividades próximas.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== EVENTOS DESTACADOS ===== -->
+<section class="preview-section">
+
+  <div class="container">
+
+    <!-- Encabezado -->
+    <div class="page-header">
+
+      <div>
+        <div class="section-label">Próximamente</div>
+
+        <h2 class="section-title" style="text-align:left;margin-bottom:0">
+          Eventos destacados
+        </h2>
+      </div>
+
+      <a href="eventos.html" class="btn btn-secondary">
+        Ver todos →
+      </a>
+
+    </div>
+
+    <!-- Evento 1 -->
+    <a href="evento-detalle.html" class="upcoming-event">
+
+      <div class="event-date-box">
+        <div class="date-day">28</div>
+        <div class="date-month">May</div>
+      </div>
+
+      <div class="upcoming-info">
+
+        <div class="upcoming-title">
+          Congreso de Ingeniería de Software 2026
+        </div>
+
+        <div class="upcoming-meta">
+          🕐 09:00 — 📍 Auditorio Principal —
+          <span class="badge-academico" style="font-size:0.75rem">
+            Académico
+          </span>
+        </div>
+
+      </div>
+
+      <span class="status status-activo">Activo</span>
+
+    </a>
+
+    <!-- Evento 2 -->
+    <a href="evento-detalle.html" class="upcoming-event">
+
+      <div class="event-date-box">
+        <div class="date-day">02</div>
+        <div class="date-month">Jun</div>
+      </div>
+
+      <div class="upcoming-info">
+
+        <div class="upcoming-title">
+          Festival Cultural Universitario
+        </div>
+
+        <div class="upcoming-meta">
+          🕐 15:00 — 📍 Plaza Central —
+          <span style="font-size:0.75rem;color:#b39ddb">
+            Cultural
+          </span>
+        </div>
+
+      </div>
+
+      <span class="status status-activo">Activo</span>
+
+    </a>
+
+    <!-- Evento 3 -->
+    <a href="evento-detalle.html" class="upcoming-event">
+
+      <div class="event-date-box">
+        <div class="date-day">07</div>
+        <div class="date-month">Jun</div>
+      </div>
+
+      <div class="upcoming-info">
+
+        <div class="upcoming-title">
+          Torneo Intercarreras de Fútbol
+        </div>
+
+        <div class="upcoming-meta">
+          🕐 08:00 — 📍 Cancha Deportiva —
+          <span style="font-size:0.75rem;color:#80deea">
+            Deportivo
+          </span>
+        </div>
+
+      </div>
+
+      <span class="status status-pendiente">Pendiente</span>
+
+    </a>
+
+  </div>
+</section>
+
+<!-- ===== PIE DE PÁGINA ===== -->
+<footer>
+  <div class="container">
+    <p>© 2026 UniEventos — Sistema de Eventos Universitarios · Grupo G01</p>
+  </div>
+</footer>
+
+<!-- Archivo JS -->
+<script src="data.js"></script>
+
+<script>
+
+  function irA(url) {
+
+    if (getSesion()) {
+      window.location.href = url;
+    }
+
+    else {
+      window.location.href =
+        'login.html?next=' +
+        encodeURIComponent(url);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    const protectedPages = [
+      'eventos.html',
+      'crear-evento.html',
+      'asistencia.html',
+      'evento-detalle.html',
+      'editar-evento.html'
+    ];
+
+    document.querySelectorAll('a[href]').forEach(function(a) {
+
+      const href = a.getAttribute('href');
+
+      if (protectedPages.some(p => href && href.startsWith(p))) {
+
+        a.addEventListener('click', function(e) {
+
+          if (!getSesion()) {
+
+            e.preventDefault();
+
+            window.location.href =
+              'login.html?next=' +
+              encodeURIComponent(href);
+          }
+        });
+      }
+    });
+  });
+
+</script>
+
+</body>
+</html>

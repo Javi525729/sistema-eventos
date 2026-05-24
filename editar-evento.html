@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editar Evento — UniEventos</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">🎓 Uni<span>Eventos</span></a>
+  <div class="nav-links">
+    <a href="index.html">Inicio</a>
+    <a href="eventos.html" class="active">Eventos</a>
+    <a href="asistencia.html">Asistencia</a>
+    <a href="crear-evento.html">+ Nuevo Evento</a>
+  </div>
+  <div class="nav-user"></div>
+</nav>
+
+<main class="page">
+  <div class="container" style="max-width:800px">
+
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span class="sep">›</span>
+      <a href="eventos.html">Eventos</a><span class="sep">›</span>
+      <span class="current" id="breadNombre">Editar Evento</span>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Editar <span>Evento</span></h1>
+        <p class="page-subtitle">Modifica la información del evento seleccionado</p>
+      </div>
+      <a id="btnVolver" href="eventos.html" class="btn btn-secondary">← Volver</a>
+    </div>
+
+    <div class="alert alert-info" id="alertNombre">ℹ️ Cargando evento...</div>
+
+    <div id="notFound" style="display:none" class="card">
+      <div style="text-align:center;padding:2rem;color:var(--text-muted)">
+        Evento no encontrado. <a href="eventos.html" style="color:var(--accent)">Volver a eventos</a>
+      </div>
+    </div>
+
+    <div class="card" id="formCard">
+      <form id="editForm" novalidate>
+        <input type="hidden" id="eventoId" />
+
+        <div style="margin-bottom:2rem">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📋 Información básica</h3>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="nombre">Nombre del evento *</label>
+              <input type="text" id="nombre" required />
+            </div>
+            <div class="form-group full">
+              <label for="descripcion">Descripción *</label>
+              <textarea id="descripcion" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="categoria">Categoría *</label>
+              <select id="categoria" required>
+                <option value="academico">Académico</option>
+                <option value="cultural">Cultural</option>
+                <option value="deportivo">Deportivo</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="estado">Estado</label>
+              <select id="estado">
+                <option value="pendiente">Pendiente</option>
+                <option value="activo">Activo</option>
+                <option value="cancelado">Cancelado</option>
+                <option value="finalizado">Finalizado</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:2rem">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📍 Fecha, hora y lugar</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="fecha">Fecha del evento *</label>
+              <input type="date" id="fecha" required />
+            </div>
+            <div class="form-group">
+              <label for="hora_inicio">Hora de inicio *</label>
+              <input type="time" id="hora_inicio" required />
+            </div>
+            <div class="form-group">
+              <label for="hora_fin">Hora de finalización</label>
+              <input type="time" id="hora_fin" />
+            </div>
+            <div class="form-group">
+              <label for="lugar">Lugar / Instalación *</label>
+              <input type="text" id="lugar" required />
+            </div>
+            <div class="form-group full">
+              <label for="direccion">Dirección o referencia</label>
+              <input type="text" id="direccion" />
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:2rem">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">👥 Inscripciones</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="cupo">Cupo máximo *</label>
+              <input type="number" id="cupo" min="1" required />
+            </div>
+            <div class="form-group">
+              <label for="costo">Costo de inscripción</label>
+              <input type="text" id="costo" />
+            </div>
+            <div class="form-group full">
+              <label for="requisitos">Requisitos para participar</label>
+              <textarea id="requisitos" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:2rem">
+          <h3 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📞 Contacto del organizador</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="organizador">Nombre del organizador *</label>
+              <input type="text" id="organizador" required />
+            </div>
+            <div class="form-group">
+              <label for="telefono">Teléfono de contacto</label>
+              <input type="tel" id="telefono" />
+            </div>
+            <div class="form-group">
+              <label for="email_contacto">Email de contacto</label>
+              <input type="email" id="email_contacto" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a id="btnCancelar" href="eventos.html" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">💾 Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="successMsg" style="display:none" class="card">
+      <div style="text-align:center;padding:2rem">
+        <div style="font-size:3rem;margin-bottom:1rem">✅</div>
+        <h2 style="font-family:'Playfair Display',serif;color:var(--white);margin-bottom:0.5rem">¡Cambios guardados!</h2>
+        <p style="color:var(--text-muted);margin-bottom:1.5rem">El evento fue actualizado exitosamente.</p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+          <a href="eventos.html" class="btn btn-secondary">Ver todos los eventos</a>
+          <a id="btnVerDetalle" href="evento-detalle.html" class="btn btn-primary">Ver evento</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container"><p>© 2026 UniEventos — Sistema de Eventos Universitarios · Grupo G01</p></div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  if (!getSesion()) { window.location.replace('login.html'); }
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const ev = id ? getEvento(id) : null;
+
+  if (!ev) {
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('notFound').style.display = 'block';
+    document.getElementById('alertNombre').style.display = 'none';
+  } else {
+    document.getElementById('alertNombre').innerHTML = `ℹ️ Estás editando: <strong>${ev.nombre}</strong>`;
+    document.getElementById('breadNombre').textContent = ev.nombre;
+    document.getElementById('btnVolver').href = 'evento-detalle.html?id=' + ev.id;
+    document.getElementById('btnCancelar').href = 'evento-detalle.html?id=' + ev.id;
+    document.getElementById('btnVerDetalle').href = 'evento-detalle.html?id=' + ev.id;
+
+    // Rellenar campos
+    document.getElementById('eventoId').value = ev.id;
+    document.getElementById('nombre').value = ev.nombre;
+    document.getElementById('descripcion').value = ev.descripcion;
+    document.getElementById('categoria').value = ev.categoria;
+    document.getElementById('estado').value = ev.estado;
+    document.getElementById('fecha').value = ev.fecha;
+    document.getElementById('hora_inicio').value = ev.hora_inicio;
+    document.getElementById('hora_fin').value = ev.hora_fin || '';
+    document.getElementById('lugar').value = ev.lugar;
+    document.getElementById('direccion').value = ev.direccion || '';
+    document.getElementById('cupo').value = ev.cupo;
+    document.getElementById('costo').value = ev.costo || '';
+    document.getElementById('requisitos').value = ev.requisitos || '';
+    document.getElementById('organizador').value = ev.organizador || '';
+    document.getElementById('telefono').value = ev.telefono || '';
+    document.getElementById('email_contacto').value = ev.email_contacto || '';
+  }
+
+  document.getElementById('editForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const datos = {
+      id: parseInt(document.getElementById('eventoId').value),
+      nombre: document.getElementById('nombre').value.trim(),
+      descripcion: document.getElementById('descripcion').value.trim(),
+      categoria: document.getElementById('categoria').value,
+      estado: document.getElementById('estado').value,
+      fecha: document.getElementById('fecha').value,
+      hora_inicio: document.getElementById('hora_inicio').value,
+      hora_fin: document.getElementById('hora_fin').value,
+      lugar: document.getElementById('lugar').value.trim(),
+      direccion: document.getElementById('direccion').value.trim(),
+      cupo: parseInt(document.getElementById('cupo').value),
+      costo: document.getElementById('costo').value.trim(),
+      requisitos: document.getElementById('requisitos').value.trim(),
+      organizador: document.getElementById('organizador').value.trim(),
+      telefono: document.getElementById('telefono').value.trim(),
+      email_contacto: document.getElementById('email_contacto').value.trim(),
+    };
+    guardarEvento(datos);
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
